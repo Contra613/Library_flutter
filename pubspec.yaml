@@ -27,8 +27,11 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  
   # Flutter Package Install
-  http: ^0.13.4
+  http: ^0.13.4                   # OpenAPI
+  email_validator: ^2.0.1         # Login, Register Email
+  rating_dialog: ^2.0.4           # Rating
 
   flutter:
     sdk: flutter
