@@ -64,8 +64,8 @@ class _LibraryState extends State<Library> {
             label: '검색',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: '즐겨찾기',
+            icon: Icon(Icons.home),
+            label: '마이페이지',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -77,7 +77,6 @@ class _LibraryState extends State<Library> {
 
   @override
   void initState() {
-    //해당 클래스가 호출되었을떄
     super.initState();
   }
 

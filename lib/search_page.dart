@@ -34,13 +34,16 @@ class _searchPageState extends State<searchPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async{
           var url =
-              '[API Key Code]';
+              // Default
+              'http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=01e338f80d4e0506df3e9e73e468e9088ef1067d3c0b32024e2ab3aed571c7dd&result_style=json&'
+              // Change
+              'page_no=1&page_size=10&start_publish_date=20170207&end_publish_date=20170207';
           var response = await http.get(Uri.parse(url));
           setState(() {
             result = response.body;
           });
         },
-        child: Icon(Icons.file_download),
+        child: Icon(Icons.search),
       ),
     );
   }
