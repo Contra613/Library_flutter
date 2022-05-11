@@ -2,15 +2,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:library_flutter/Login/login_page.dart';
 
-import 'package:library_flutter/Login/login_page.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:library_flutter/Util/authentication.dart';
+
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, required this.title}) : super(key: key);
-  final String title;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -63,9 +58,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onSaved: (val) {
-                      email = val;
-                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -87,46 +79,44 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onSaved: (val) {
-                      password = val;
-                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        
-                        //_register();
-                        
-                        AuthenticationHelper()
-                            .signUp(email: email, password: password)
-                            .then((result) {
-                          if (result == null) {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) => LoginPage(title: 'login')));
+                  GestureDetector(
+                      onTap: () async {
+                        try {
+                          UserCredential userCredential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text)
+                              .then((value) {
+                            if (value.user!.email == null) {
+                            } else {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) => LoginPage()));
+                            }
+                            return value;
+                          });
+                          FirebaseAuth.instance.currentUser?.sendEmailVerification();
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            print('the password provided is too weak');
+                          } else if (e.code == 'email-already-in-use') {
+                            print('The account already exists for that email.');
                           } else {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                result,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ));
+                            print('11111');
                           }
-                        });
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
-                    ),
-                    child: const Text(
-                      '가입',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                        } catch (e) {
+                          print('끝');
+                        }
+                      },
+                      child: Container(
+                        width: 328,
+                        height: 48,
+                        color: Colors.amber,
+                        child: Center(child: Text('회원가입')),
+                      )),
                   const SizedBox(
                     height: 20,
                   ),
@@ -139,8 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                              const LoginPage(title: 'Login UI'),
+                              builder: (context) => LoginPage(),
                             ),
                           );
                         },
@@ -156,18 +145,17 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-  /*void _register() async {
+void _register() async {
     final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text, password: _passwordController.text);
     final user = result.user;
-
     if (user == null) {
       final snacBar = SnackBar(
         content: Text("Please try again later"),
       );
       Scaffold.of(context).showSnackBar(snacBar);
     }
-  }*/
+  }
 }
 
 

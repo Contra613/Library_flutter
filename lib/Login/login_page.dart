@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:library_flutter/Login/register_page.dart';
 import 'package:library_flutter/Screen/interface.dart';
 
-import 'package:library_flutter/Util/authentication.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key, required this.title}) : super(key: key);
-  final String title;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -96,32 +92,43 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // 만약 회원이라면? -> 입장
-                        // 회원이 아니라면? -> 회원이 아니라고 표시
-
-                        // Interface 진입
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const Interface(),
+                  GestureDetector(
+                      onTap: () async {
+                        try {
+                          UserCredential userCredential = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text) //아이디와 비밀번호로 로그인 시도
+                              .then((value) {
+                            print(value);
+                            value.user!.emailVerified == true //이메일 인증 여부
+                                ? Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => Interface()))
+                                : print('이메일 확인 안댐');
+                            return value;
+                          });
+                        } on FirebaseAuthException catch (e) {
+                          //로그인 예외처리
+                          if (e.code == 'user-not-found') {
+                            print('등록되지 않은 이메일입니다');
+                          } else if (e.code == 'wrong-password') {
+                            print('비밀번호가 틀렸습니다');
+                          } else {
+                            print(e.code);
+                          }
+                        }
+                      },
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            '로그인',
+                            style: TextStyle(color: Colors.white),
                           ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
-                    ),
-                    child: const Text(
-                      '로그인',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                        ),
+                        width: 100,
+                        height: 50,
+                        color: Colors.black,
+                      )),
                   const SizedBox(
                     height: 20,
                   ),
@@ -134,8 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                              const RegisterPage(title: 'Register UI'),
+                              builder: (context) => RegisterPage(),
                             ),
                           );
                         },
