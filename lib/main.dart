@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:library_flutter/Login/login_page.dart';
 
-import 'package:library_flutter/category_page.dart';
-import 'package:library_flutter/search_page.dart';
-import 'package:library_flutter/favorites_page.dart';
+import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-
-void main() {
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -14,77 +15,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Library(),
-    );
-  }
-}
-
-class Library extends StatefulWidget {
-  const Library({Key? key}) : super(key: key);
-
-  @override
-  State<Library> createState() => _LibraryState();
-}
-
-class _LibraryState extends State<Library> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(
-      fontSize: 30,
-      fontWeight: FontWeight.bold
-  );
-
-  final List<Widget> _widgetOptions = <Widget>[
-    categoryPage(),
-    searchPage(),
-    favoritesPage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  // 메인 위젯
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: _widgetOptions.elementAt(_selectedIndex),
+    return GetMaterialApp(
+      title: '동서남Book',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: '카테고리',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: '검색',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '마이페이지',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.lightGreen,
-        onTap: _onItemTapped,
-      ),
+      home: LoginPage(title: 'login',),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
 }
-
-
