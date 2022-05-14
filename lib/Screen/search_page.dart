@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:library_flutter/Util/rating.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,8 +12,8 @@ class searchPage extends StatefulWidget {
 
 class _searchPageState extends State<searchPage> {
   String result = '';
-  // ? : Null safety
   List? data;
+
   TextEditingController? _editingController;
   ScrollController? _scrollController;
   int page = 1;
@@ -40,6 +39,7 @@ class _searchPageState extends State<searchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Botton Overflowed by Pixels
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: TextField(
@@ -52,7 +52,7 @@ class _searchPageState extends State<searchPage> {
       body: Container(
         child: Center(
           child: data!.length == 0
-              ? Text('데이터가 없습니다',
+              ? Text('도서를 검색하세요.',
             style: TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           )
@@ -80,7 +80,6 @@ class _searchPageState extends State<searchPage> {
                           Text('저자 : ${data![index]['authors'].toString()}'),
                           Text('출판사 : ${data![index]['publisher'].toString()}'),
                           Text('isbn : ${data![index]['isbn'].toString()}'),
-                          Rating((p0) => null)
                         ],
                       )
                     ],
@@ -95,7 +94,7 @@ class _searchPageState extends State<searchPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.lightGreen,
         onPressed: () async {
           page = 1;
           data!.clear();

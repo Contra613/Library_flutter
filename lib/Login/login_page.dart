@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Botton Overflowed by Pixels
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -77,21 +78,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  CheckboxListTile(
-                    title: const Text("Remember me"),
-                    contentPadding: EdgeInsets.zero,
-                    value: rememberValue,
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    onChanged: (newValue) {
-                      setState(() {
-                        rememberValue = newValue!;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
+
+                  // Firebase Authentication Login (Email/Password)
                   GestureDetector(
                       onTap: () async {
                         try {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:library_flutter/Screen/search_page.dart';
-import 'package:library_flutter/Screen/my_page.dart';
+import 'package:library_flutter/Screen/recommend_page.dart';
 
 class Interface extends StatefulWidget {
   const Interface({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _InterfaceState extends State<Interface> {
 
   final List<Widget> _widgetOptions = <Widget>[
     searchPage(),
-    myhomePage(),
+    recommendPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -45,12 +45,12 @@ class _InterfaceState extends State<Interface> {
             label: '검색',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '마이페이지',
+            icon: Icon(Icons.book),
+            label: '도서 추천',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.green,
         onTap: _onItemTapped,
       ),
     );

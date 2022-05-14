@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:library_flutter/Login/login_page.dart';
-
-import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async{
@@ -15,7 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       title: '동서남Book',
       theme: ThemeData(
         primarySwatch: Colors.green,

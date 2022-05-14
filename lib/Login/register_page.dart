@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Botton Overflowed by Pixels
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -83,6 +84,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(
                     height: 20,
                   ),
+
+                  // Firebase Authentication Register (Email/Password)
                   GestureDetector(
                       onTap: () async {
                         try {
@@ -93,6 +96,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               .then((value) {
                             if (value.user!.email == null) {
                             } else {
+
+                              // 화면 전환하지 말고 이메일 인증하라는 팝업 띄우기
+
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (_) => LoginPage()));
                             }
@@ -145,18 +151,9 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-void _register() async {
-    final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text, password: _passwordController.text);
-    final user = result.user;
-    if (user == null) {
-      final snacBar = SnackBar(
-        content: Text("Please try again later"),
-      );
-      Scaffold.of(context).showSnackBar(snacBar);
-    }
-  }
 }
+
+
 
 
 
