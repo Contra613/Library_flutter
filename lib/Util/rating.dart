@@ -4,7 +4,7 @@ class Rating extends StatefulWidget {
   final int maximumRating;
   final Function(int) onRatingSelected;
 
-  Rating(this.onRatingSelected, [this.maximumRating = 5]);
+  const Rating(this.onRatingSelected, [this.maximumRating = 5]);
 
   @override
   _Rating createState() => _Rating();
@@ -15,14 +15,14 @@ class _Rating extends State<Rating> {
 
   Widget _buildRatingStar(int index) {
     if (index < _currentRating) {
-      return Icon(Icons.star, color: Colors.orange);
+      return const Icon(Icons.star, color: Colors.orange);
     } else {
-      return Icon(Icons.star_border_outlined);
+      return const Icon(Icons.star_border_outlined);
     }
   }
 
   Widget _buildBody() {
-    final stars = List<Widget>.generate(this.widget.maximumRating, (index) {
+    final stars = List<Widget>.generate(widget.maximumRating, (index) {
       return GestureDetector(
         child: _buildRatingStar(index),
         onTap: () {
@@ -30,7 +30,7 @@ class _Rating extends State<Rating> {
             _currentRating = index + 1;
           });
 
-          this.widget.onRatingSelected(_currentRating);
+          widget.onRatingSelected(_currentRating);
         },
       );
     });
@@ -42,12 +42,12 @@ class _Rating extends State<Rating> {
           children: stars,
         ),
         OutlinedButton(
-          child: Text("Clear", style: TextStyle(color: Colors.black)),
+          child: const Text("Clear", style: TextStyle(color: Colors.black)),
           onPressed: () {
             setState(() {
               _currentRating = 0;
             });
-            this.widget.onRatingSelected(_currentRating);
+            widget.onRatingSelected(_currentRating);
           },
         )
       ],

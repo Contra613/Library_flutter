@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:library_flutter/Util/rating.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -22,9 +21,9 @@ class _searchPageState extends State<searchPage> {
   @override
   void initState() {
     super.initState();
-    data = new List.empty(growable: true);
-    _editingController = new TextEditingController();
-    _scrollController = new ScrollController();
+    data = List.empty(growable: true);
+    _editingController = TextEditingController();
+    _scrollController = ScrollController();
 
     _scrollController!.addListener(() {
       if(_scrollController!.offset >=
@@ -44,15 +43,15 @@ class _searchPageState extends State<searchPage> {
         backgroundColor: Colors.white,
         title: TextField(
           controller: _editingController,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
           keyboardType: TextInputType.text,
-          decoration: InputDecoration(hintText: '검색어를 입력하세요.'),
+          decoration: const InputDecoration(hintText: '검색어를 입력하세요.'),
         ),
       ),
       body: Container(
         child: Center(
-          child: data!.length == 0
-              ? Text('데이터가 없습니다',
+          child: data!.isEmpty
+              ? const Text('데이터가 없습니다',
             style: TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           )
@@ -70,7 +69,7 @@ class _searchPageState extends State<searchPage> {
                       ),
                       Column(
                         children: <Widget>[
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width - 150,
                             child: Text(
                               data![index]['title'].toString(),
@@ -80,7 +79,7 @@ class _searchPageState extends State<searchPage> {
                           Text('저자 : ${data![index]['authors'].toString()}'),
                           Text('출판사 : ${data![index]['publisher'].toString()}'),
                           Text('isbn : ${data![index]['isbn'].toString()}'),
-                          Rating((p0) => null)
+                          //Rating((p0) => null)
                         ],
                       )
                     ],
@@ -95,13 +94,13 @@ class _searchPageState extends State<searchPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.lightGreen,
         onPressed: () async {
           page = 1;
           data!.clear();
           getJSONData();
         },
-        child: Icon(Icons.search),
+        child: const Icon(Icons.search),
       ),
     );
   }

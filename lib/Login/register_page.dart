@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -115,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: 328,
                         height: 48,
                         color: Colors.amber,
-                        child: Center(child: Text('회원가입')),
+                        child: const Center(child: Text('회원가입')),
                       )),
                   const SizedBox(
                     height: 20,
@@ -144,17 +145,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
-  }
-void _register() async {
-    final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text, password: _passwordController.text);
-    final user = result.user;
-    if (user == null) {
-      final snacBar = SnackBar(
-        content: Text("Please try again later"),
-      );
-      Scaffold.of(context).showSnackBar(snacBar);
-    }
   }
 }
 

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:library_flutter/Login/register_page.dart';
 import 'package:library_flutter/Screen/interface.dart';
@@ -21,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -77,18 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  CheckboxListTile(
-                    title: const Text("Remember me"),
-                    contentPadding: EdgeInsets.zero,
-                    value: rememberValue,
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    onChanged: (newValue) {
-                      setState(() {
-                        rememberValue = newValue!;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -103,8 +94,9 @@ class _LoginPageState extends State<LoginPage> {
                             print(value);
                             value.user!.emailVerified == true //이메일 인증 여부
                                 ? Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => Interface()))
+                                MaterialPageRoute(builder: (_) => const Interface()))
                                 : print('이메일 확인 안댐');
+
                             return value;
                           });
                         } on FirebaseAuthException catch (e) {
@@ -119,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       child: Container(
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             '로그인',
                             style: TextStyle(color: Colors.white),

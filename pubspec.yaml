@@ -36,11 +36,11 @@ dependencies:
 
   firebase_auth: ^3.3.17          # Firebase 인증 기능 제공
   firebase_core: ^1.16.0
+  cloud_firestore: ^3.1.15
   google_sign_in: ^5.3.0
-  get: ^4.6.1
 
-
-
+  provider: ^6.0.2
+  shared_preferences: ^2.0.15
 
   flutter:
     sdk: flutter
