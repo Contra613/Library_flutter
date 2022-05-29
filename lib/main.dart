@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:library_flutter/Login/login_page.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -15,8 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      MaterialApp(
+    return MaterialApp(
       title: '동서남Book',
       theme: ThemeData(
         primarySwatch: Colors.green,

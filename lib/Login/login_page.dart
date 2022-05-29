@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,  // Botton Overflowed by Pixels
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -83,6 +83,8 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 20,
                   ),
+
+                  // Firebase Authentication Login (Email/Password)
                   GestureDetector(
                       onTap: () async {
                         try {
