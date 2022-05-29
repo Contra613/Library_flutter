@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:library_flutter/Screen/search_page.dart';
-import 'package:library_flutter/Screen/review_page.dart';
+import 'package:library_flutter/Screen/recommend_page.dart';
 
 class Interface extends StatefulWidget {
   const Interface({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _InterfaceState extends State<Interface> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const searchPage(),
-    const reviewPage(),
+    const recommendPage(),
   ];
 
   void _onItemTapped(int index) {
