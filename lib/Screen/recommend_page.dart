@@ -20,13 +20,21 @@ class _recommendPageState extends State<recommendPage> {
   // 필드명
   final String fnName = "name";
   final String fnTitle = "title";
+  final String fnAuthor = "author";
+  final String fnReview = "review";
+
   final String fnDatetime = "datetime";
   final String fnAuthor_uid = "author_uid";
 
   TextEditingController _newNameCon = TextEditingController();
   TextEditingController _newTitleCon = TextEditingController();
+  TextEditingController _newAuthorCon = TextEditingController();
+  TextEditingController _newReviewCon = TextEditingController();
+
   TextEditingController _undNameCon = TextEditingController();
   TextEditingController _undTitleCon = TextEditingController();
+  TextEditingController _undAuthorCon = TextEditingController();
+  TextEditingController _undReviewCon = TextEditingController();
 
   /// 이메일 확인용
   final String userEmail = "Email";
@@ -36,6 +44,7 @@ class _recommendPageState extends State<recommendPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       key: _scaffoldKey,
       body: Column(
         children: <Widget>[
@@ -46,83 +55,78 @@ class _recommendPageState extends State<recommendPage> {
             ),
           ),
           Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection(colName)
-                    .orderBy(fnDatetime, descending: true)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) return Text("Error: ${snapshot.error}");
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Text("Loading...");
-                    default:
-                      return ListView(
-                        children: snapshot.data!.docs
-                            .map((DocumentSnapshot document) {
-                          Timestamp ts = document[fnDatetime];
-                          String dt = timestampToStrDateTime(ts);
-                          return Card(
-                            elevation: 2,
-                            child: InkWell(
-                              // Read Document
-                              onTap: () {
-                                showDocument(document.id);
-                              },
-                              // Update or Delete Document
-                              onLongPress: () {
-                                showUpdateOrDeleteDocDialog(document);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          document[fnName],
-                                          style: TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection(colName)
+                  .orderBy(fnDatetime, descending: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) return Text("Error: ${snapshot.error}");
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Text("Loading...");
+                  default:
+                    return ListView(
+                      children: snapshot.data!.docs
+                          .map((DocumentSnapshot document) {
+                        Timestamp ts = document[fnDatetime];
+                        String dt = timestampToStrDateTime(ts);
+                        return Card(
+                          elevation: 2,
+                          child: InkWell(
+                            onDoubleTap: () {
+                              showUpdateOrDeleteDocDialog(document);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        document[fnTitle],
+                                        style: TextStyle(
+                                          color: Colors.blueGrey,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Text(
-                                          dt.toString(),
-                                          style:
-                                          TextStyle(color: Colors.grey[600]),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
+                                      ),
+                                      Text(
+                                        "저자: " + document[fnAuthor],
+                                        style: TextStyle(color: Colors.black54),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
                                       alignment: Alignment.centerLeft,
                                       child: Row(
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            document[fnTitle],
-                                            style: TextStyle(color: Colors.black54),
+                                            "작성 시간: " + dt.toString(),
+                                            style:
+                                            TextStyle(color: Colors.grey[600]),
                                           ),
-                                          ElevatedButton(
-                                              child: Text('리뷰'),
-                                              onPressed: () {},
+                                          Text(
+                                            "작성자: " + document[fnName],
+                                            style: TextStyle(color: Colors.black54),
                                           ),
                                         ],
                                       )
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
                             ),
-                          );
-                        }).toList(),
-                      );
-                  }
-                },
-              ),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                }
+              },
+            ),
           )
         ],
       ),
@@ -134,32 +138,25 @@ class _recommendPageState extends State<recommendPage> {
 
   /// Firestore CRUD Logic
   // 문서 생성 (Create)
-  void createDoc(String name, String title) {
+  void createDoc(String name, String title, String author, String review) {
     FirebaseFirestore.instance.collection(colName).add({
       fnName: name,
       fnTitle: title,
+      fnAuthor: author,
+      fnReview: review,
       fnDatetime: Timestamp.now(),
       userEmail: (user.currentUser != null) ? user.currentUser!.email.toString() : null,
       fnAuthor_uid: (user.currentUser != null) ? user.currentUser!.uid.toString() : null
     });
   }
 
-  /// 문서 조회 (Read)
-  void showDocument(String documentID) {
-    FirebaseFirestore.instance
-        .collection(colName)
-        .doc(documentID)
-        .get()
-        .then((doc) {
-      showReadDocSnackBar(doc);
-    });
-  }
-
   /// 문서 갱신 (Update)
-  void updateDoc(String docID, String name, String title) {
+  void updateDoc(String docID, String name, String title, String author, String review) {
     FirebaseFirestore.instance.collection(colName).doc(docID).update({
       fnName: name,
       fnTitle: title,
+      fnAuthor: author,
+      fnReview: review,
     });
   }
 
@@ -177,19 +174,32 @@ class _recommendPageState extends State<recommendPage> {
         return AlertDialog(
           title: Text("도서 등록"),
           content: Container(
-            height: 200,
-            child: Column(
-              children: <Widget>[
-                TextField(
-                  autofocus: true,
-                  decoration: InputDecoration(labelText: "사용자 이름"),
-                  controller: _newNameCon,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: "도서 제목"),
-                  controller: _newTitleCon,
-                )
-              ],
+            width: 500,
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(labelText: "사용자 이름"),
+                    controller: _newNameCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "도서 제목"),
+                    controller: _newTitleCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "저자"),
+                    controller: _newAuthorCon,
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(labelText: "추천 이유"),
+                    controller: _newReviewCon,
+                  ),
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
@@ -198,6 +208,8 @@ class _recommendPageState extends State<recommendPage> {
               onPressed: () {
                 _newNameCon.clear();
                 _newTitleCon.clear();
+                _newAuthorCon.clear();
+                _newReviewCon.clear();
                 Navigator.pop(context);
               },
             ),
@@ -206,10 +218,12 @@ class _recommendPageState extends State<recommendPage> {
               onPressed: () {
                 if (_newTitleCon.text.isNotEmpty &&
                     _newNameCon.text.isNotEmpty) {
-                  createDoc(_newNameCon.text, _newTitleCon.text);
+                  createDoc(_newNameCon.text, _newTitleCon.text, _newAuthorCon.text, _newReviewCon.text);
                 }
                 _newNameCon.clear();
                 _newTitleCon.clear();
+                _newAuthorCon.clear();
+                _newReviewCon.clear();
                 Navigator.pop(context);
               },
             )
@@ -219,25 +233,13 @@ class _recommendPageState extends State<recommendPage> {
     );
   }
 
-  void showReadDocSnackBar(DocumentSnapshot doc) {
-    SnackBar(
-      backgroundColor: Colors.deepOrangeAccent,
-      duration: Duration(seconds: 5),
-      content: Text(
-          "$fnName: ${doc[fnName]}\n$fnTitle: ${doc[fnTitle]}"
-              "\n$fnDatetime: ${timestampToStrDateTime(doc[fnDatetime])}"),
-      action: SnackBarAction(
-        label: "Done",
-        textColor: Colors.white,
-        onPressed: () {},
-      ),
-    );
-  }
-
   void showUpdateOrDeleteDocDialog(DocumentSnapshot doc) {
     _undNameCon.text = doc[fnName];
     _undTitleCon.text = doc[fnTitle];
+    _undAuthorCon.text = doc[fnAuthor];
+    _undReviewCon.text = doc[fnReview];
     _unemailComform.text = doc[userEmail];
+
 
     showDialog(
       barrierDismissible: false,
@@ -246,22 +248,31 @@ class _recommendPageState extends State<recommendPage> {
         return AlertDialog(
           title: Text("수정 및 삭제"),
           content: Container(
-            height: 200,
-            child: Column(
-              children: <Widget>[
-                TextField(
-                  decoration: InputDecoration(labelText: "사용자 정보"),
-                  controller: _unemailComform,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: "사용자 이름"),
-                  controller: _undNameCon,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: "도서 제목"),
-                  controller: _undTitleCon,
-                )
-              ],
+            width: 500,
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(labelText: "사용자 정보"),
+                    controller: _unemailComform,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "사용자 이름"),
+                    controller: _undNameCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "도서 제목"),
+                    controller: _undTitleCon,
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(labelText: "추천 이유"),
+                    controller: _undReviewCon,
+                  ),
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
@@ -277,7 +288,7 @@ class _recommendPageState extends State<recommendPage> {
               onPressed: () {
                 if (_undNameCon.text.isNotEmpty &&
                     _undTitleCon.text.isNotEmpty) {
-                  updateDoc(doc.id, _undNameCon.text, _undTitleCon.text);
+                  updateDoc(doc.id, _undNameCon.text, _undTitleCon.text, _undAuthorCon.text, _undReviewCon.text);
                 }
                 Navigator.pop(context);
               },
@@ -287,6 +298,7 @@ class _recommendPageState extends State<recommendPage> {
               onPressed: () {
                 _undNameCon.clear();
                 _undTitleCon.clear();
+                _undReviewCon.clear();
                 Navigator.pop(context);
               },
             ),
@@ -301,5 +313,3 @@ class _recommendPageState extends State<recommendPage> {
         .toString();
   }
 }
-
-
