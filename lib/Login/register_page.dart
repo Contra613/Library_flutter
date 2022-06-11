@@ -118,8 +118,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                       },
                       child: Container(
-                        width: 328,
-                        height: 48,
+                          width: 100,
+                          height: 50,
                         color: Colors.amber,
                         child: const Center(child: Text('회원가입')),
                       )),

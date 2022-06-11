@@ -75,7 +75,10 @@ class _recommendPageState extends State<recommendPage> {
                         return Card(
                           elevation: 2,
                           child: InkWell(
-                            onDoubleTap: () {
+                            onTap: () {
+                              ReadDeleteDocDialog(document);
+                            },
+                            onLongPress: () {
                               showUpdateOrDeleteDocDialog(document);
                             },
                             child: Container(
@@ -102,8 +105,7 @@ class _recommendPageState extends State<recommendPage> {
                                   Container(
                                       alignment: Alignment.centerLeft,
                                       child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
                                             "작성 시간: " + dt.toString(),
@@ -116,7 +118,7 @@ class _recommendPageState extends State<recommendPage> {
                                           ),
                                         ],
                                       )
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -137,7 +139,8 @@ class _recommendPageState extends State<recommendPage> {
   }
 
   /// Firestore CRUD Logic
-  // 문서 생성 (Create)
+
+  /// 문서 생성 (Create)
   void createDoc(String name, String title, String author, String review) {
     FirebaseFirestore.instance.collection(colName).add({
       fnName: name,
@@ -175,7 +178,7 @@ class _recommendPageState extends State<recommendPage> {
           title: Text("도서 등록"),
           content: Container(
             width: 500,
-            height: 400,
+            height: 320,
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
@@ -240,7 +243,6 @@ class _recommendPageState extends State<recommendPage> {
     _undReviewCon.text = doc[fnReview];
     _unemailComform.text = doc[userEmail];
 
-
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -264,6 +266,10 @@ class _recommendPageState extends State<recommendPage> {
                   TextField(
                     decoration: InputDecoration(labelText: "도서 제목"),
                     controller: _undTitleCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "저자"),
+                    controller: _undAuthorCon,
                   ),
                   TextField(
                     keyboardType: TextInputType.multiline,
@@ -299,6 +305,64 @@ class _recommendPageState extends State<recommendPage> {
                 _undNameCon.clear();
                 _undTitleCon.clear();
                 _undReviewCon.clear();
+                _undAuthorCon.clear();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void ReadDeleteDocDialog(DocumentSnapshot doc) {
+    _undNameCon.text = doc[fnName];
+    _undTitleCon.text = doc[fnTitle];
+    _undAuthorCon.text = doc[fnAuthor];
+    _undReviewCon.text = doc[fnReview];
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("추천 이유 확인"),
+          content: Container(
+            width: 500,
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(labelText: "사용자 이름"),
+                    controller: _undNameCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "도서 제목"),
+                    controller: _undTitleCon,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "저자"),
+                    controller: _undAuthorCon,
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(labelText: "추천 이유"),
+                    controller: _undReviewCon,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text("취소"),
+              onPressed: () {
+                _undNameCon.clear();
+                _undTitleCon.clear();
+                _undReviewCon.clear();
+                _undAuthorCon.clear();
                 Navigator.pop(context);
               },
             ),
