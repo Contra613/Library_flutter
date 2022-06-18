@@ -1,16 +1,10 @@
-# library_flutter
+# Library_Flutter
 
-A new Flutter project.
+이 프로젝트는 크로스플랫폼 프로그래밍 과목 프로젝트로 Flutter을 사용하여 도서 검색 및 도서 리뷰를 주로 하는 어플리케이션이다.
+기존 학교의 전자도서관에서 "왜 이 도서를 추천했는가?"를 알지 못하는 문제를 고치기 위해 도서의 리뷰를 작성하여 왜 이 도서를 추천했는지를 알려주는 것이 목표이다.
 
-## Getting Started
+- login_page.dart, register_page : Firebase Authentication로 회원가입 시 email/password로 등록하여 email로 인증메일이 발송되고, 메일 인증 후 로그인 가능
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- search_page.dart : Kakao OpenAPI를 활용하여 검색하고자 하는 도서 정보를 입력 후 검색하면 도서 정보 출력
+- recommand_page.dart : Firebase Firestore Database를 활용하여 추천 도서를 입력하고, 각 입력된 도서들은 작성한 email을 기준으로 수정 및 삭제 가능
+                        다른 계정으로 작성한 도서들은 수정 및 삭제가 불가능                              
